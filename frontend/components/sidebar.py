@@ -53,7 +53,7 @@ def render_sidebar() -> tuple[str, str]:
 
         page = st.radio(
             "功能导航",
-            options=["💬 智能问答", "🗂️ 后台管理", "📊 统计分析"],
+            options=["🏠 首页", "💬 智能问答", "🗂️ 后台管理", "📊 统计分析"],
             key="nav_page",
         )
 

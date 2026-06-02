@@ -12,7 +12,9 @@ KNOWLEDGE_BASE_DIR = BASE_DIR / "knowledge_base"   # 原始文档留在项目内
 VECTOR_STORE_DIR = _DATA_ROOT / "vector_store"     # 向量库移到无空格路径
 LOGS_DIR = _DATA_ROOT / "logs"                     # 日志移到无空格路径
 
-for _d in [KNOWLEDGE_BASE_DIR, VECTOR_STORE_DIR, LOGS_DIR]:
+ASSETS_DIR = BASE_DIR / "assets"
+
+for _d in [KNOWLEDGE_BASE_DIR, VECTOR_STORE_DIR, LOGS_DIR, ASSETS_DIR]:
     _d.mkdir(parents=True, exist_ok=True)
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")

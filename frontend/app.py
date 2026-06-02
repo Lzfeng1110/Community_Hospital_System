@@ -71,12 +71,15 @@ from frontend.components.sidebar import render_sidebar
 from frontend.views.chat_page import render_chat_page
 from frontend.views.admin_page import render_admin_page
 from frontend.views.stats_page import render_stats_page
+from frontend.views.home_page import render_home_page
 
 # 渲染侧边栏，获取当前页面与模块
 current_page, current_module = render_sidebar()
 
 # 路由到对应页面
-if current_page == "💬 智能问答":
+if current_page == "🏠 首页":
+    render_home_page()
+elif current_page == "💬 智能问答":
     render_chat_page(current_module)
 elif current_page == "🗂️ 后台管理":
     render_admin_page()
