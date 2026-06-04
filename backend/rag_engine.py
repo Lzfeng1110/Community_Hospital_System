@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import time
 from pathlib import Path
 from typing import Generator, Any
@@ -139,6 +140,9 @@ def rebuild_vector_store(module: str = "all") -> str:
 
     for m in modules:
         _vector_stores.pop(m, None)
+        old_dir = VECTOR_STORE_DIR / m
+        if old_dir.exists():
+            shutil.rmtree(old_dir)
         store = _build_vector_store(m)
         if store:
             _vector_stores[m] = store
