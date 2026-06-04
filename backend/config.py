@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# 国内服务器访问 HuggingFace 镜像，必须在任何 huggingface_hub 导入前设置
+os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
+
 BASE_DIR = Path(__file__).parent.parent
 
 # FAISS C++ 底层不支持路径含空格，数据目录统一放到无空格路径

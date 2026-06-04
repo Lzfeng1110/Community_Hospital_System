@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 from typing import Generator, Any
 
+from openai import OpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import (
     PyPDFLoader,
@@ -236,19 +237,25 @@ def chat_stream(
     system_content = _build_system_prompt(module)
     user_content = f"参考资料：\n{context}\n\n居民问题：{question}"
 
-    messages: list = [SystemMessage(content=system_content)]
+    messages: list[dict] = [{"role": "system", "content": system_content}]
     for turn in history[-MAX_HISTORY_TURNS:]:
-        if turn["role"] == "user":
-            messages.append(HumanMessage(content=turn["content"]))
-        elif turn["role"] == "assistant":
-            messages.append(AIMessage(content=turn["content"]))
-    messages.append(HumanMessage(content=user_content))
+        if turn["role"] in ("user", "assistant"):
+            messages.append({"role": turn["role"], "content": turn["content"]})
+    messages.append({"role": "user", "content": user_content})
 
-    llm = get_llm(streaming=True)
+    # 直接使用 openai SDK 流式调用，避免 LangChain httpx 客户端生命周期问题
+    client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
     full_answer = ""
 
-    for chunk in llm.stream(messages):
-        token = chunk.content
+    stream = client.chat.completions.create(
+        model=DEEPSEEK_MODEL,
+        messages=messages,
+        stream=True,
+        temperature=0.3,
+        max_tokens=2048,
+    )
+    for chunk in stream:
+        token = chunk.choices[0].delta.content or ""
         if token:
             full_answer += token
             yield token
